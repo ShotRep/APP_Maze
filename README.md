@@ -29,6 +29,20 @@ A: Matter JS has the ability to detect collisions between different shapes and r
    to us as events.
 
 
+## Building a Maze.
+1.) Create a grid of cells
+
+2.) Pick a random starting cell
+
+3.) For that cell, build a randomly-ordered list of neighbors
+
+4.) if a neighbor has been visited before, remove it from the list
+
+5.) For each remaining neighbor, 'move' to it and remove the wall between those two cells
+
+6.) Repeat for this new neighbor
+
+
 ## Matter JS Terminology - High Level Notes.
 [Matter JS Docs](https://brm.io/matter-js/docs/)
 WORLD: Object that contains all of the different "things" in our matter app.
