@@ -56,7 +56,23 @@ World.add(world, walls)
 //   }
 // }
 
-const cells = 3
+const shuffle = (arr) => {
+  let counter = arr.length
+
+  while (counter > 0) {
+    const index = Math.floor(Math.random() * counter)
+
+    counter--
+
+    const temp = arr[counter]
+    arr[counter] = arr[index]
+    arr[index] = temp
+  }
+  return arr
+}
+
+const cells = 20
+const unitLength = width / cells
 
 const grid = Array(cells)
   .fill(null)
@@ -79,27 +95,91 @@ const horizontals = Array(cells - 1)
   .map(() => Array(cells).fill(false))
 console.log(horizontals)
 
-const startRow = Math.floor(Math.random()*cells)
+const startRow = Math.floor(Math.random() * cells)
 const startColumn = Math.floor(Math.random() * cells)
 
 console.log(startRow, startColumn)
 
-const moveCell = (rew, column) => {
+const stepThroughCell = (row, column) => {
   // If I have visited the cell at [row, column], then return
-
+  if (grid[row][column]) {
+    return
+  }
   // Mark this cell as being visited
-
+  grid[row][column] = true
   // Assemble randomly-ordered list of neighbors
-
+  const neighbors = shuffle([
+    [row - 1, column, "up"],
+    [row, column + 1, "right"],
+    [row + 1, column, "down"],
+    [row, column - 1, "left"],
+  ])
+  console.log(neighbors)
   // For each neighbor
-
-  // See if that neighbor is out of bounds
-
-  // If we have visited that neighbor, continue to next neighbor
-
-  // Remove a wall from either horizontals or verticals
-
-  // Visit that next cell
-
+  for (let neighbor of neighbors) {
+    const [nextRow, nextColumn, direction] = neighbor
+    // See if that neighbor is out of bounds
+    if (
+      nextRow < 0 ||
+      nextRow >= cells ||
+      nextColumn < 0 ||
+      nextColumn >= cells
+    ) {
+      continue
+    }
+    // If we have visited that neighbor, continue to next neighbor
+    if (grid[nextRow][nextColumn]) {
+      continue
+    }
+    // Remove a wall from either horizontals or verticals
+    if (direction === "left") {
+      verticals[row][column - 1] = true
+    } else if (direction === "right") {
+      verticals[row][column] = true
+    } else if (direction === "up") {
+      horizontals[row - 1][column] = true
+    } else if (direction === "down") {
+      horizontals[row][column] = true
+    }
+    // Visit that next cell
+    stepThroughCell(nextRow, nextColumn)
+  }
 }
-moveCell(startRow,startColumn)
+stepThroughCell(startRow, startColumn)
+console.log(grid)
+
+horizontals.forEach((row, rowIndex) => {
+  row.forEach((open, columnIndex) => {
+    if (open) {
+      return
+    }
+    const wall = Bodies.rectangle(
+      columnIndex * unitLength + unitLength / 2,
+      rowIndex * unitLength + unitLength,
+      unitLength,
+      5,
+      {
+        isStatic: true,
+      }
+    )
+    World.add(world, wall)
+  })
+})
+
+verticals.forEach((row, rowIndex) => {
+  row.forEach((open, columnIndex) => {
+    if (open) {
+      return
+    }
+    const wall = Bodies.rectangle(
+      columnIndex * unitLength + unitLength,
+      rowIndex * unitLength + unitLength / 2,
+      5,
+      unitLength,
+      {
+        isStatic: true,
+      }
+    )
+    World.add(world, wall)
+  })
+})
