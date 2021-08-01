@@ -1,11 +1,12 @@
 ////////////////////BOILER PLATE CODE\\\\\\\\\\\\\\\\\\\\\\\\
 
 //Call objects of Matter JS
-const {Engine, Render, Runner, World, Bodies} = Matter
+const {Engine, Render, Runner, World, Bodies, Body, Events} = Matter
 console.log(Matter)
 
 //Create
 const engine = Engine.create() //this creates a world object
+engine.world.gravity.y = 0
 const {world} = engine
 console.log(world)
 
@@ -30,10 +31,10 @@ Runner.run(Runner.create(), engine) //coordinates the states of our engine
 
 //WALLS - Give the canvas a boundary that keeps our shapes on tht page\\
 const walls = [
-  Bodies.rectangle(width / 2, 0, width, 20, {isStatic: true}),
-  Bodies.rectangle(width / 2, height, width, 20, {isStatic: true}),
-  Bodies.rectangle(width, height / 2, 20, height, {isStatic: true}),
-  Bodies.rectangle(0, height / 2, 20, height, {isStatic: true}),
+  Bodies.rectangle(width / 2, 0, width, 2, {isStatic: true}),
+  Bodies.rectangle(width / 2, height, width, 2, {isStatic: true}),
+  Bodies.rectangle(width, height / 2, 2, height, {isStatic: true}),
+  Bodies.rectangle(0, height / 2, 2, height, {isStatic: true}),
 ]
 World.add(world, walls)
 
@@ -181,5 +182,61 @@ verticals.forEach((row, rowIndex) => {
       }
     )
     World.add(world, wall)
+  })
+})
+
+//GOAL
+const goal = Bodies.rectangle(
+  width - unitLength / 2,
+  height - unitLength / 2,
+  unitLength * 0.7,
+  unitLength * 0.7,
+  {
+    label: "goal",
+    isStatic: true,
+  }
+)
+World.add(world, goal)
+
+//BALL
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4, {
+  label: "ball",
+})
+World.add(world, ball)
+
+document.addEventListener("keydown", (even) => {
+  const {x, y} = ball.velocity
+  console.log(x, y)
+
+  console.log(event)
+  if (event.keyCode === 87) {
+    Body.setVelocity(ball, {x: x, y: y - 5})
+    console.log("move up")
+  }
+  if (event.keyCode === 68) {
+    Body.setVelocity(ball, {x: x + 5, y: y})
+    console.log("move right")
+  }
+  if (event.keyCode === 83) {
+    Body.setVelocity(ball, {x: x, y: y + 5})
+    console.log("move down")
+  }
+  if (event.keyCode === 65) {
+    Body.setVelocity(ball, {x: x - 5, y: y})
+    console.log("move left")
+  }
+})
+
+//Win Condition
+
+Events.om(engine, "collisionStart", (event) => {
+  event.pairs.forEach((collision) => {
+    const labels = ["ball", "goal"]
+    if (
+      labels.includes(collision.bodyA.label) &&
+      labels.includes(collision.bodyB.label)
+    ) {
+      console.log("User Won!")
+    }
   })
 })
