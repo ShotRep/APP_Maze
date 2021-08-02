@@ -10,20 +10,17 @@ const {
   Body,
   Events,
   MouseConstraint,
-  Mouse
+  Mouse,
 } = Matter
-console.log(Matter)
+// console.log(Matter)
 
 //Create
 const engine = Engine.create() //this creates a world object
-// engine.positionIterations = 1
-// engine.velocityIterations = 1
-// engine.constraintIterations = 1
-engine.world.gravity = 1
 engine.world.gravity.y = 0
 engine.world.gravity.x = 0
+
 const {world} = engine
-console.log(world)
+// console.log(world)
 
 const width = window.innerWidth - 9
 const height = window.innerHeight - 9
@@ -58,7 +55,9 @@ const walls = [
   Bodies.rectangle(width, height / 2, 2, height, {isStatic: true}),
   Bodies.rectangle(0, height / 2, 2, height, {isStatic: true}),
 ]
+// console.log(walls)
 World.add(world, walls)
+console.log(walls)
 
 // Add shapes to our world individually\\
 // const shape = Bodies.rectangle(100, 100, 50, 50, {  //positionX, positionY, sizeW, sizeH
@@ -113,7 +112,7 @@ const unitLengthY = height / cellsVertical
 const grid = Array(cellsVertical)
   .fill(null)
   .map(() => Array(cellsHorizontal).fill(false))
-console.log(grid)
+// console.log(grid)
 
 // const grid = Array(autoAdjust)
 //   .fill(null)
@@ -129,17 +128,17 @@ console.log(grid)
 const verticals = Array(cellsVertical)
   .fill(null)
   .map(() => Array(cellsHorizontal - 1).fill(false))
-console.log(verticals)
+// console.log(verticals)
 
 const horizontals = Array(cellsVertical - 1)
   .fill(null)
   .map(() => Array(cellsHorizontal).fill(false))
-console.log(horizontals)
+// console.log(horizontals)
 
 const startRow = Math.floor(Math.random() * cellsVertical)
 const startColumn = Math.floor(Math.random() * cellsHorizontal)
 
-console.log(startRow, startColumn)
+// console.log(startRow, startColumn)
 
 const stepThroughCell = (row, column) => {
   // If I have visited the cell at [row, column], then return
@@ -155,7 +154,7 @@ const stepThroughCell = (row, column) => {
     [row + 1, column, "down"],
     [row, column - 1, "left"],
   ])
-  console.log(neighbors)
+  // console.log(neighbors)
   // For each neighbor
   for (let neighbor of neighbors) {
     const [nextRow, nextColumn, direction] = neighbor
@@ -187,7 +186,7 @@ const stepThroughCell = (row, column) => {
   }
 }
 stepThroughCell(startRow, startColumn)
-console.log(grid)
+// console.log(grid)
 
 horizontals.forEach((row, rowIndex) => {
   row.forEach((open, columnIndex) => {
@@ -210,6 +209,10 @@ horizontals.forEach((row, rowIndex) => {
     World.add(world, wall)
   })
 })
+horizontals.collisionFilter = {
+  group: 0,
+  category: 1,
+}
 
 verticals.forEach((row, rowIndex) => {
   row.forEach((open, columnIndex) => {
@@ -232,6 +235,10 @@ verticals.forEach((row, rowIndex) => {
     World.add(world, wall)
   })
 })
+verticals.collisionFilter = {
+  group: 0,
+  category: 1,
+}
 
 //GOAL
 minSquare = Math.min(unitLengthX, unitLengthY) / 2
@@ -259,6 +266,12 @@ const ball = Bodies.circle(unitLengthX / 2, unitLengthY / 2, ballRadius, {
   },
 })
 World.add(world, ball)
+console.log(ball)
+
+// ball.collisionFilter = {
+//   group: 1,
+//   category: 0,  
+// }
 
 //Movement
 
