@@ -1,11 +1,25 @@
 ////////////////////BOILER PLATE CODE\\\\\\\\\\\\\\\\\\\\\\\\
 
 //Call objects of Matter JS
-const {Engine, Render, Runner, World, Bodies, Body, Events} = Matter
+const {
+  Engine,
+  Render,
+  Runner,
+  World,
+  Bodies,
+  Body,
+  Events,
+  MouseConstraint,
+  Mouse
+} = Matter
 console.log(Matter)
 
 //Create
 const engine = Engine.create() //this creates a world object
+// engine.positionIterations = 1
+// engine.velocityIterations = 1
+// engine.constraintIterations = 1
+engine.world.gravity = 1
 engine.world.gravity.y = 0
 engine.world.gravity.x = 0
 const {world} = engine
@@ -27,6 +41,13 @@ const render = Render.create({
 
 Render.run(render) //start to render
 Runner.run(Runner.create(), engine) //coordinates the states of our engine
+
+World.add(
+  world,
+  MouseConstraint.create(engine, {
+    mouse: Mouse.create(render.canvas),
+  })
+)
 
 ////////////////////BOILER PLATE CODE\\\\\\\\\\\\\\\\\\\\\\\\
 
