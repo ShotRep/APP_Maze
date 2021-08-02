@@ -18,7 +18,7 @@ const {
 const engine = Engine.create() //this creates a world object
 engine.world.gravity.y = 0
 engine.world.gravity.x = 0
-
+engine.gravity.scale = 0.0001
 const {world} = engine
 // console.log(world)
 
@@ -48,7 +48,7 @@ World.add(
 
 ////////////////////BOILER PLATE CODE\\\\\\\\\\\\\\\\\\\\\\\\
 
-//WALLS - Give the canvas a boundary that keeps our shapes on tht page\\
+//WALLS - Give the canvas a boundary that keeps our shapes on the page\\
 const walls = [
   Bodies.rectangle(width / 2, 0, width, 2, {isStatic: true}),
   Bodies.rectangle(width / 2, height, width, 2, {isStatic: true}),
@@ -57,7 +57,7 @@ const walls = [
 ]
 // console.log(walls)
 World.add(world, walls)
-console.log(walls)
+// console.log(walls)
 
 // Add shapes to our world individually\\
 // const shape = Bodies.rectangle(100, 100, 50, 50, {  //positionX, positionY, sizeW, sizeH
@@ -197,7 +197,11 @@ horizontals.forEach((row, rowIndex) => {
       columnIndex * unitLengthX + unitLengthX / 2,
       rowIndex * unitLengthY + unitLengthY,
       unitLengthX,
-      5,
+      3,
+      // (collisionFilter = {
+      //   group: 1,
+      //   category: 2,
+      // }),
       {
         label: "wall",
         isStatic: true,
@@ -209,10 +213,6 @@ horizontals.forEach((row, rowIndex) => {
     World.add(world, wall)
   })
 })
-horizontals.collisionFilter = {
-  group: 0,
-  category: 1,
-}
 
 verticals.forEach((row, rowIndex) => {
   row.forEach((open, columnIndex) => {
@@ -222,8 +222,12 @@ verticals.forEach((row, rowIndex) => {
     const wall = Bodies.rectangle(
       columnIndex * unitLengthX + unitLengthX,
       rowIndex * unitLengthY + unitLengthY / 2,
-      5,
+      3,
       unitLengthY,
+      //     collisionFilter = {
+      //   group: 1,
+      //   category: 2,
+      // },
       {
         label: "wall",
         isStatic: true,
@@ -235,10 +239,6 @@ verticals.forEach((row, rowIndex) => {
     World.add(world, wall)
   })
 })
-verticals.collisionFilter = {
-  group: 0,
-  category: 1,
-}
 
 //GOAL
 minSquare = Math.min(unitLengthX, unitLengthY) / 2
@@ -266,35 +266,35 @@ const ball = Bodies.circle(unitLengthX / 2, unitLengthY / 2, ballRadius, {
   },
 })
 World.add(world, ball)
-console.log(ball)
+// console.log(ball)
 
 // ball.collisionFilter = {
-//   group: 1,
-//   category: 0,  
+//   group: -1,
+//   category: 2,
 // }
 
 //Movement
 
-document.addEventListener("keydown", (even) => {
+document.addEventListener("keydown", (event) => {
   const {x, y} = ball.velocity
-  console.log(x, y)
+  // console.log(x, y)
 
-  console.log(event)
-  if (event.keyCode === 87) {
+  // console.log(event)
+  if (event.keyCode === 87 || event.key === "ArrowUp") {
     Body.setVelocity(ball, {x: x, y: y - 2})
-    console.log("move up")
+    // console.log("move up")
   }
-  if (event.keyCode === 68) {
+  if (event.keyCode === 68 || event.key === "ArrowRight") {
     Body.setVelocity(ball, {x: x + 2, y: y})
-    console.log("move right")
+    // console.log("move right")
   }
-  if (event.keyCode === 83) {
+  if (event.keyCode === 83 || event.key === "ArrowDown") {
     Body.setVelocity(ball, {x: x, y: y + 2})
-    console.log("move down")
+    // console.log("move down")
   }
-  if (event.keyCode === 65) {
+  if (event.keyCode === 65 || event.key === "ArrowLeft") {
     Body.setVelocity(ball, {x: x - 2, y: y})
-    console.log("move left")
+    // console.log("move left")
   }
 })
 
@@ -308,7 +308,7 @@ Events.on(engine, "collisionStart", (event) => {
       labels.includes(collision.bodyB.label)
     ) {
       document.querySelector(".winner").classList.remove("hidden")
-      console.log("User Won!")
+      // console.log("User Won!")
       world.gravity.y = 1
       world.bodies.forEach((body) => {
         if (body.label === "wall") {
