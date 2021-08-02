@@ -266,7 +266,8 @@ const ball = Bodies.circle(unitLengthX / 2, unitLengthY / 2, ballRadius, {
   },
 })
 World.add(world, ball)
-// console.log(ball)
+// console.log(ball) 
+ ball.frictionAir = 0.035 
 
 // ball.collisionFilter = {
 //   group: -1,
